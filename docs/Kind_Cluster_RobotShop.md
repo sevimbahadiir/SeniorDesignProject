@@ -19,7 +19,8 @@ Kind dokümantasyonu: https://kind.sigs.k8s.io/
 ```bash
 brew install kind helm kubectl
 ```
-![Kind Kurulum - MacOS](images/step1-installation.png)
+<img src="images/step1-installation.png" alt="MacOS - Kind, Helm ve Kubectl Kurulumu" width="600">
+
 
 ### Windows
 ```powershell
