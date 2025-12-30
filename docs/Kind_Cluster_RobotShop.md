@@ -7,7 +7,6 @@ Bu doküman, **Kind (Kubernetes in Docker)** kullanarak lokal bir Kubernetes clu
 ## Ön Koşullar
 - Docker
 - Git
-- İnternet bağlantısı
 
 Kind dokümantasyonu: https://kind.sigs.k8s.io/
 
