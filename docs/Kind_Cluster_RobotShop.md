@@ -27,7 +27,7 @@ winget install Helm.Helm
 winget install Kubernetes.kubectl
 ```
 
----
+![Kind Kurulum - MacOS](images/step1-installation.png)
 
 ## 2. RobotShop Repository’sini Klonlama
 ```bash
