@@ -19,6 +19,7 @@ Kind dokümantasyonu: https://kind.sigs.k8s.io/
 ```bash
 brew install kind helm kubectl
 ```
+![Kind Kurulum - MacOS](images/step1-installation.png)
 
 ### Windows
 ```powershell
@@ -27,7 +28,7 @@ winget install Helm.Helm
 winget install Kubernetes.kubectl
 ```
 
-![Kind Kurulum - MacOS](images/step1-installation.png)
+
 
 ## 2. RobotShop Repository’sini Klonlama
 ```bash
@@ -35,7 +36,7 @@ git clone https://github.com/instana/robot-shop.git
 cd robot-shop
 ```
 
----
+![Kind, Helm ve Kubectl Kurulumu - MacOS](images/step1-installation.png)
 
 ## 3. Kind Cluster Yapılandırma Dosyası
 
