@@ -37,7 +37,7 @@ git clone https://github.com/instana/robot-shop.git
 cd robot-shop
 ```
 
-![Git Clone - RobotShop Repository](images/step2-robotshop.png)
+<img src="images/step2-robotshop.png" alt="Git Clone - RobotShop Repository" width="600">
 
 ## 3. Kind Cluster Yapılandırma Dosyası
 
@@ -68,13 +68,13 @@ nodes:
 ```bash
 kind create cluster --name robot-shop --config kind-config.yaml
 ```
-![Kind Cluster Oluşturma](images/step4-kindclusuter.png)
+<img src="images/step4-kindclusuter.png" alt="Kind Cluster Oluşturma" width="600">
 
 ## 5. Node Kontrolü
 ```bash
 kubectl get nodes
 ```
-![Kubectl Get Nodes - Node Durumu](images/step5-pod.png)
+<img src="images/step5-pod.png" alt="Kubectl Get Nodes - Node Durumu" width="600">
 
 ## 6. RobotShop Deploy (Helm)
 ```bash
@@ -82,19 +82,19 @@ kubectl create namespace robot-shop
 cd K8s/helm
 helm install robot-shop --namespace robot-shop .
 ```
-![Helm Install - RobotShop Deployment](images/step6-deploy.png)
+<img src="images/step6-deploy.png" alt="Helm Install - RobotShop Deployment" width="600">
 
 ## 7. Pod Kontrolü
 ```bash
 kubectl get pods -n robot-shop
 ```
-![Kubectl Get Pods - RobotShop Pod'ları](images/step7-pods.png)
+<img src="images/step7-pods.png" alt="Kubectl Get Pods - RobotShop Pod'ları" width="600">
 
 ## 8. Uygulamaya Erişim
 ```bash
 kubectl port-forward svc/web 8080:8080 -n robot-shop
 ```
-![Kubectl Get Pods - Monitoring Stack](images/monitoring.png)
+<img src="images/monitoring.png" alt="Kubectl Get Pods - Monitoring Stack" width="600">
 
 ## 9. Prometheus & Grafana Kurulumu
 ```bash
