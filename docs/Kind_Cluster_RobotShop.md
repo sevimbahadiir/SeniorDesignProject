@@ -61,9 +61,8 @@ nodes:
 - role: worker
 - role: worker
 ```
-
-```yaml
-web'de de açabilmek için köprü oluşturma (güncel)(sevim)
+web için köprü oluşturma ve otomatik dosya oluşturma (güncel)
+@"
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
@@ -74,7 +73,7 @@ nodes:
     protocol: TCP
 - role: worker
 - role: worker
-```
+"@ | Out-File -FilePath kind-config.yaml -Encoding utf8
 
 ## 4. Kind Cluster Oluşturma
 ```bash
