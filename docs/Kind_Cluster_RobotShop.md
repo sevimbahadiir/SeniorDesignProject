@@ -67,13 +67,15 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
+  image: kindest/node:v1.27.3
   extraPortMappings:
   - containerPort: 31080
     hostPort: 8080
     protocol: TCP
 - role: worker
+  image: kindest/node:v1.27.3
 - role: worker
-"@ | Out-File -FilePath kind-config.yaml -Encoding utf8
+  image: kindest/node:v1.27.3
 ```
 
 ## 4. Kind Cluster Oluşturma
