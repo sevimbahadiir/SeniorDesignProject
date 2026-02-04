@@ -62,6 +62,19 @@ nodes:
 - role: worker
 ```
 
+```yaml
+web'de de açabilmek için köprü oluşturma (güncel)(sevim)
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 31080
+    hostPort: 8080
+    protocol: TCP
+- role: worker
+- role: worker
+```
 
 ## 4. Kind Cluster Oluşturma
 ```bash
