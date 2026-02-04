@@ -61,7 +61,7 @@ nodes:
 - role: worker
 - role: worker
 ```
-web için köprü oluşturma ve otomatik dosya oluşturma (güncel)
+```web için köprü oluşturma ve otomatik dosya oluşturma (güncel)
 @"
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -74,6 +74,7 @@ nodes:
 - role: worker
 - role: worker
 "@ | Out-File -FilePath kind-config.yaml -Encoding utf8
+```
 
 ## 4. Kind Cluster Oluşturma
 ```bash
