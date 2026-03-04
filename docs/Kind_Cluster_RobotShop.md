@@ -76,6 +76,7 @@ nodes:
   image: kindest/node:v1.27.3
 - role: worker
   image: kindest/node:v1.27.3
+"@ | Out-File -FilePath kind-config.yaml -Encoding utf8
 ```
 
 ## 4. Kind Cluster Oluşturma
