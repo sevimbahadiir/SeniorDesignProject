@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '/Users/sevvalyavas/Desktop/RL denem')
+sys.path.insert(0, '/Users/sevvalyavas/Desktop/RL deneme')
 import logging
 import argparse
 
