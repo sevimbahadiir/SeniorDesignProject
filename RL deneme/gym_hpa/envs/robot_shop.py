@@ -1,23 +1,22 @@
-import os
 import csv
-import datetime
 from datetime import datetime
 import logging
 import time
 from statistics import mean
 
-import gymnasium as gym
 import numpy as np
 import pandas as pd
+import gymnasium as gym
 from gymnasium import spaces
+from gymnasium.utils import seeding
 
-from gym_hpa.envs.deployment import get_max_cpu, get_max_mem, get_max_traffic, get_robot_shop_deployment_list
-from gym_hpa.envs.util import save_to_csv, get_num_pods, get_cost_reward, get_latency_reward_robot_shop
-
+# MIN and MAX Replication
 MIN_REPLICATION = 1
 MAX_REPLICATION = 8
-MAX_STEPS = 25
 
+MAX_STEPS = 25  # MAX Number of steps per episode
+
+# Possible Actions (Discrete)
 ACTION_DO_NOTHING = 0
 ACTION_ADD_1_REPLICA = 1
 ACTION_ADD_2_REPLICA = 2
@@ -34,62 +33,197 @@ ACTION_TERMINATE_5_REPLICA = 12
 ACTION_TERMINATE_6_REPLICA = 13
 ACTION_TERMINATE_7_REPLICA = 14
 
-DEPLOYMENTS = ["cart", "catalogue", "dispatch", "payment",
-               "ratings", "shipping", "user", "web"]
+# Deployments -> Robot Shop dataset services
+DEPLOYMENTS = [
+    "cartservice",
+    "catalogueservice",
+    "dispatchservice",
+    "paymentservice",
+    "ratingsservice",
+    "shippingservice",
+    "userservice",
+    "webservice"
+]
 
-MOVES = ["None", "Add-1", "Add-2", "Add-3", "Add-4", "Add-5", "Add-6", "Add-7",
-         "Stop-1", "Stop-2", "Stop-3", "Stop-4", "Stop-5", "Stop-6", "Stop-7"]
+# Action Moves
+MOVES = [
+    "None", "Add-1", "Add-2", "Add-3", "Add-4", "Add-5", "Add-6", "Add-7",
+    "Stop-1", "Stop-2", "Stop-3", "Stop-4", "Stop-5", "Stop-6", "Stop-7"
+]
 
+# IDs
 ID_DEPLOYMENTS = 0
 ID_MOVES = 1
 
-ID_cart = 0
-ID_catalogue = 1
-ID_dispatch = 2
-ID_payment = 3
-ID_ratings = 4
-ID_shipping = 5
-ID_user = 6
-ID_web = 7
+ID_cart_service = 0
+ID_catalogue_service = 1
+ID_dispatch_service = 2
+ID_payment_service = 3
+ID_ratings_service = 4
+ID_shipping_service = 5
+ID_user_service = 6
+ID_web_service = 7
 
+# Reward objectives
 LATENCY = 'latency'
 COST = 'cost'
 
+# Penalty tuned to dataset reward scale
+INVALID_ACTION_PENALTY = -2.5
+
+
+def save_to_csv(file_name, episode, avg_pods, avg_latency, total_reward, execution_time):
+    header = ['episode', 'avg_pods', 'avg_latency', 'total_reward', 'execution_time']
+    file_exists = False
+    try:
+        with open(file_name, 'r', newline=''):
+            file_exists = True
+    except FileNotFoundError:
+        file_exists = False
+
+    with open(file_name, 'a+', newline='') as file:
+        writer = csv.writer(file)
+        if not file_exists:
+            writer.writerow(header)
+        writer.writerow([episode, avg_pods, avg_latency, total_reward, execution_time])
+
+
+def get_num_pods(deployment_list):
+    return sum(d.num_pods for d in deployment_list)
+
+
+class SimulatedDeployment:
+    def __init__(self, name, namespace="robot-shop", min_pods=1, max_pods=8):
+        self.name = name
+        self.namespace = namespace
+        self.min_pods = min_pods
+        self.max_pods = max_pods
+
+        self.num_pods = min_pods
+        self.num_previous_pods = min_pods
+        self.desired_replicas = min_pods
+
+        self.cpu_usage = 0.0
+        self.mem_usage = 0.0
+        self.received_traffic = 0.0
+        self.transmit_traffic = 0.0
+        self.latency = 0.0
+
+    def print_deployment(self):
+        logging.info(
+            f"[Deployment] {self.name} | num_pods={self.num_pods} | "
+            f"desired={self.desired_replicas} | namespace={self.namespace}"
+        )
+
+    def deploy_pod_replicas(self, replicas, env):
+        target = self.num_pods + replicas
+        if target > self.max_pods:
+            env.constraint_max_pod_replicas = True
+            self.num_previous_pods = self.num_pods
+            self.num_pods = self.max_pods
+        else:
+            self.num_previous_pods = self.num_pods
+            self.num_pods = target
+
+        self.update_replicas()
+
+    def terminate_pod_replicas(self, replicas, env):
+        target = self.num_pods - replicas
+        if target < self.min_pods:
+            env.constraint_min_pod_replicas = True
+            self.num_previous_pods = self.num_pods
+            self.num_pods = self.min_pods
+        else:
+            self.num_previous_pods = self.num_pods
+            self.num_pods = target
+
+        self.update_replicas()
+
+    def update_replicas(self):
+        self.desired_replicas = self.num_pods
+
+    def update_obs_k8s(self):
+        return
+
+
+def get_online_boutique_deployment_list(k8s, min_pods, max_pods):
+    return [
+        SimulatedDeployment(name, "robot-shop", min_pods, max_pods)
+        for name in DEPLOYMENTS
+    ]
+
 
 class RobotShop(gym.Env):
-    """Horizontal Scaling for Robot Shop in Kubernetes - an OpenAI gym environment"""
-
-    metadata = {'render_modes': ['human', 'ansi', 'array']}
+    metadata = {'render_modes': ['human']}
 
     def __init__(self, k8s=False, goal_reward="cost", waiting_period=0.3):
         super(RobotShop, self).__init__()
 
         self.k8s = k8s
-        self.name = "robot_shop_gym"
+        self.name = "online_boutique_gym"
         self.__version__ = "0.0.1"
+        self.seed()
         self.goal_reward = goal_reward
         self.waiting_period = waiting_period
 
+        if self.k8s:
+            logging.warning(
+                "[Init] This rewritten environment is intended for offline/simulation mode. "
+                "Please use k8s=False."
+            )
+
         logging.info("[Init] Env: {} | K8s: {} | Version {} |".format(
-            self.name, self.k8s, self.__version__))
+            self.name, self.k8s, self.__version__
+        ))
 
         self.current_step = 0
         self.num_actions = 15
-
-        self.action_space = spaces.MultiDiscrete([8, self.num_actions])
+        self.action_space = spaces.MultiDiscrete([len(DEPLOYMENTS), self.num_actions])
 
         self.min_pods = MIN_REPLICATION
         self.max_pods = MAX_REPLICATION
-        self.num_apps = 8
+        self.num_apps = 1
 
-        self.deploymentList = get_robot_shop_deployment_list(self.k8s, self.min_pods, self.max_pods)
+        self.deploymentList = get_online_boutique_deployment_list(self.k8s, self.min_pods, self.max_pods)
 
         for d in self.deploymentList:
             d.print_deployment()
 
+        self.file_results = f"results_{goal_reward}.csv"
+        self.obs_csv = f"{self.name}_{goal_reward}_observation.csv"
+
+        self.df = pd.read_csv("/Users/sevvalyavas/Desktop/RL deneme/dataset/robot_shop_rl_dataset_final.csv")
+
+        self.feature_columns = []
+        for dep in DEPLOYMENTS:
+            self.feature_columns.extend([
+                f"{dep}_num_pods",
+                f"{dep}_desired_replicas",
+                f"{dep}_cpu_usage",
+                f"{dep}_mem_usage",
+                f"{dep}_traffic_in",
+                f"{dep}_traffic_out",
+                f"{dep}_latency",
+            ])
+
+        missing_columns = [col for col in self.feature_columns if col not in self.df.columns]
+        if missing_columns:
+            raise ValueError(f"Dataset is missing required columns: {missing_columns}")
+
+        for col in self.feature_columns:
+            self.df[col] = pd.to_numeric(self.df[col], errors='coerce')
+
+        self.df = self.df.dropna(subset=self.feature_columns).reset_index(drop=True)
+
+        if self.df.empty:
+            raise ValueError("Dataset is empty after cleaning.")
+
+        self.pod_columns = [f"{dep}_num_pods" for dep in DEPLOYMENTS]
+        self.pod_matrix = self.df[self.pod_columns].to_numpy(dtype=np.float32)
+
         self.observation_space = self.get_observation_space()
 
-        self.total_reward = 0
+        self.total_reward = None
         self.avg_pods = []
         self.avg_latency = []
 
@@ -103,11 +237,8 @@ class RobotShop(gym.Env):
         self.time_start = 0
         self.execution_time = 0
         self.episode_count = 0
-        self.file_results = "results.csv"
-        self.obs_csv = self.name + "_observation.csv"
 
-        # Dataset — simulation mode
-        self.df = pd.read_csv("/Users/sevvalyavas/Desktop/RL denem/dataset/robot_shop_rl_dataset_final.csv")
+        self.current_sample = None
 
     def step(self, action):
         if self.current_step == 1:
@@ -115,24 +246,9 @@ class RobotShop(gym.Env):
                 self.simulation_update()
             self.time_start = time.time()
 
-        if action[ID_DEPLOYMENTS] == 0:
-            n = ID_cart
-        elif action[ID_DEPLOYMENTS] == 1:
-            n = ID_catalogue
-        elif action[ID_DEPLOYMENTS] == 2:
-            n = ID_dispatch
-        elif action[ID_DEPLOYMENTS] == 3:
-            n = ID_payment
-        elif action[ID_DEPLOYMENTS] == 4:
-            n = ID_ratings
-        elif action[ID_DEPLOYMENTS] == 5:
-            n = ID_shipping
-        elif action[ID_DEPLOYMENTS] == 6:
-            n = ID_user
-        else:
-            n = ID_web
+        n = int(action[ID_DEPLOYMENTS])
 
-        self.take_action(action[ID_MOVES], n)
+        self.take_action(int(action[ID_MOVES]), n)
 
         if self.k8s:
             if action[ID_MOVES] != ACTION_DO_NOTHING \
@@ -150,16 +266,23 @@ class RobotShop(gym.Env):
         self.total_reward += reward
 
         self.avg_pods.append(get_num_pods(self.deploymentList))
-        self.avg_latency.append(self.deploymentList[ID_web].latency)
+        self.avg_latency.append(self._get_app_latency())
 
-        logging.info('[Step {}] | Action (Deployment): {} | Action (Move): {} | Reward: {} | Total Reward: {}'.format(
-            self.current_step, DEPLOYMENTS[action[0]], MOVES[action[1]], reward, self.total_reward))
+        logging.info(
+            '[Step {}] | Action (Deployment): {} | Action (Move): {} | Reward: {} | Total Reward: {}'.format(
+                self.current_step, DEPLOYMENTS[action[0]], MOVES[action[1]], reward, self.total_reward
+            )
+        )
 
         ob = self.get_state()
         date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.save_obs_to_csv(self.obs_csv, np.array(ob), date, self.deploymentList[ID_web].latency)
+        self.save_obs_to_csv(self.obs_csv, np.array(ob), date, self._get_app_latency())
 
-        self.info = dict(total_reward=self.total_reward)
+        self.info = dict(
+            total_reward=self.total_reward,
+            app_latency=self._get_app_latency(),
+            total_pods=get_num_pods(self.deploymentList)
+        )
 
         self.constraint_max_pod_replicas = False
         self.constraint_min_pod_replicas = False
@@ -167,15 +290,26 @@ class RobotShop(gym.Env):
         if self.current_step == MAX_STEPS:
             self.episode_count += 1
             self.execution_time = time.time() - self.time_start
-            save_to_csv(self.file_results, self.episode_count,
-                        mean(self.avg_pods), mean(self.avg_latency),
-                        self.total_reward, self.execution_time)
 
-        # FIX 1: gymnasium step → 5 değer döndürür (terminated, truncated ayrı)
-        return np.array(ob), reward, self.episode_over, False, self.info
+            save_to_csv(
+                self.file_results,
+                self.episode_count,
+                mean(self.avg_pods) if self.avg_pods else 0,
+                mean(self.avg_latency) if self.avg_latency else 0,
+                self.total_reward,
+                self.execution_time
+            )
 
-    def reset(self, seed=None, options=None):
-        # FIX 2: gymnasium reset → (obs, info) döndürür
+        terminated = self.episode_over
+        truncated = False
+
+        return np.array(ob, dtype=np.float32), reward, terminated, truncated, self.info
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+
+    def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
 
         self.current_step = 0
@@ -187,9 +321,20 @@ class RobotShop(gym.Env):
         self.constraint_max_pod_replicas = False
         self.constraint_min_pod_replicas = False
 
-        self.deploymentList = get_robot_shop_deployment_list(self.k8s, self.min_pods, self.max_pods)
+        self.deploymentList = get_online_boutique_deployment_list(self.k8s, self.min_pods, self.max_pods)
 
-        return np.array(self.get_state()), {}
+        if seed is not None:
+            sample_index = self.np_random.integers(0, len(self.df))
+            self.current_sample = self.df.iloc[int(sample_index)]
+        else:
+            self.current_sample = self.df.sample(n=1, random_state=None).iloc[0]
+
+        self._apply_sample_to_deployments(self.current_sample, initialize_previous=True)
+
+        obs = np.array(self.get_state(), dtype=np.float32)
+        info = {}
+
+        return obs, info
 
     def render(self):
         return
@@ -239,155 +384,157 @@ class RobotShop(gym.Env):
             if self.goal_reward == COST:
                 return -1
             elif self.goal_reward == LATENCY:
-                return -3000
+                return INVALID_ACTION_PENALTY
 
         if self.constraint_min_pod_replicas:
             if self.goal_reward == COST:
                 return -1
             elif self.goal_reward == LATENCY:
-                return -3000
+                return INVALID_ACTION_PENALTY
 
-        return self.calculate_reward()
+        reward = self.calculate_reward()
+        return reward
 
     def get_state(self):
-        ob = (
-            self.deploymentList[ID_cart].num_pods,
-            self.deploymentList[ID_cart].desired_replicas,
-            self.deploymentList[ID_cart].cpu_usage,
-            self.deploymentList[ID_cart].mem_usage,
-            self.deploymentList[ID_cart].received_traffic,
-            self.deploymentList[ID_cart].transmit_traffic,
-            self.deploymentList[ID_catalogue].num_pods,
-            self.deploymentList[ID_catalogue].desired_replicas,
-            self.deploymentList[ID_catalogue].cpu_usage,
-            self.deploymentList[ID_catalogue].mem_usage,
-            self.deploymentList[ID_catalogue].received_traffic,
-            self.deploymentList[ID_catalogue].transmit_traffic,
-            self.deploymentList[ID_dispatch].num_pods,
-            self.deploymentList[ID_dispatch].desired_replicas,
-            self.deploymentList[ID_dispatch].cpu_usage,
-            self.deploymentList[ID_dispatch].mem_usage,
-            self.deploymentList[ID_dispatch].received_traffic,
-            self.deploymentList[ID_dispatch].transmit_traffic,
-            self.deploymentList[ID_payment].num_pods,
-            self.deploymentList[ID_payment].desired_replicas,
-            self.deploymentList[ID_payment].cpu_usage,
-            self.deploymentList[ID_payment].mem_usage,
-            self.deploymentList[ID_payment].received_traffic,
-            self.deploymentList[ID_payment].transmit_traffic,
-            self.deploymentList[ID_ratings].num_pods,
-            self.deploymentList[ID_ratings].desired_replicas,
-            self.deploymentList[ID_ratings].cpu_usage,
-            self.deploymentList[ID_ratings].mem_usage,
-            self.deploymentList[ID_ratings].received_traffic,
-            self.deploymentList[ID_ratings].transmit_traffic,
-            self.deploymentList[ID_shipping].num_pods,
-            self.deploymentList[ID_shipping].desired_replicas,
-            self.deploymentList[ID_shipping].cpu_usage,
-            self.deploymentList[ID_shipping].mem_usage,
-            self.deploymentList[ID_shipping].received_traffic,
-            self.deploymentList[ID_shipping].transmit_traffic,
-            self.deploymentList[ID_user].num_pods,
-            self.deploymentList[ID_user].desired_replicas,
-            self.deploymentList[ID_user].cpu_usage,
-            self.deploymentList[ID_user].mem_usage,
-            self.deploymentList[ID_user].received_traffic,
-            self.deploymentList[ID_user].transmit_traffic,
-            self.deploymentList[ID_web].num_pods,
-            self.deploymentList[ID_web].desired_replicas,
-            self.deploymentList[ID_web].cpu_usage,
-            self.deploymentList[ID_web].mem_usage,
-            self.deploymentList[ID_web].received_traffic,
-            self.deploymentList[ID_web].transmit_traffic,
-        )
-        return ob
+        ob = []
+        for dep in self.deploymentList:
+            ob.extend([
+                float(dep.num_pods),
+                float(dep.desired_replicas),
+                float(dep.cpu_usage),
+                float(dep.mem_usage),
+                float(dep.received_traffic),
+                float(dep.transmit_traffic),
+                float(dep.latency),
+            ])
+        return tuple(ob)
 
     def get_observation_space(self):
-        low_list = []
-        high_list = []
-        for _ in DEPLOYMENTS:
-            low_list += [self.min_pods, self.min_pods, 0, 0, 0, 0]
-            high_list += [self.max_pods, self.max_pods,
-                          get_max_cpu(), get_max_mem(),
-                          get_max_traffic(), get_max_traffic()]
+        low = []
+        high = []
+
+        for dep in DEPLOYMENTS:
+            low.extend([
+                self.min_pods,
+                self.min_pods,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ])
+
+            high.extend([
+                self.max_pods,
+                self.max_pods,
+                float(self.df[f"{dep}_cpu_usage"].max()),
+                float(self.df[f"{dep}_mem_usage"].max()),
+                float(self.df[f"{dep}_traffic_in"].max()),
+                float(self.df[f"{dep}_traffic_out"].max()),
+                float(self.df[f"{dep}_latency"].max())
+            ])
+
         return spaces.Box(
-            low=np.array(low_list),
-            high=np.array(high_list),
+            low=np.array(low, dtype=np.float32),
+            high=np.array(high, dtype=np.float32),
             dtype=np.float32
         )
 
+    def _get_app_latency(self):
+        latencies = [d.latency for d in self.deploymentList]
+        return float(np.mean(latencies))
+
     def calculate_reward(self):
+        reward = 0
+
         if self.goal_reward == COST:
-            return get_cost_reward(self.deploymentList)
+            matches = 0
+            for dep in self.deploymentList:
+                if dep.num_pods == dep.desired_replicas:
+                    matches += 1
+            reward = matches / len(self.deploymentList)
+
         elif self.goal_reward == LATENCY:
-            return get_latency_reward_robot_shop(ID_web, self.deploymentList)
+            app_latency = self._get_app_latency()
+            reward = -app_latency
+
+        return reward
 
     def simulation_update(self):
-        def get_svc(name):
-            return name + 'service' if name != 'web' else 'webservice'
-
-        if self.current_step == 1:
-            sample = self.df.sample()
-            for i in range(len(DEPLOYMENTS)):
-                svc = get_svc(DEPLOYMENTS[i])
-                self.deploymentList[i].num_pods = int(sample[svc + '_num_pods'].values[0])
-                self.deploymentList[i].num_previous_pods = int(sample[svc + '_num_pods'].values[0])
+        if self.current_step == 1 or self.current_sample is None:
+            sample = self.df.sample(n=1, random_state=None).iloc[0]
         else:
-            pods = [d.num_pods for d in self.deploymentList]
-            previous_pods = [d.num_previous_pods for d in self.deploymentList]
+            current_pods = np.array([d.num_pods for d in self.deploymentList], dtype=np.float32)
 
-            data = self.df.copy()
-            for i in range(len(DEPLOYMENTS)):
-                svc = get_svc(DEPLOYMENTS[i])
-                col = svc + '_num_pods'
-                diff_col = 'diff-' + svc
-                data[diff_col] = data[col].diff()
-                diff_val = pods[i] - previous_pods[i]
-                filtered = data.loc[(data[col] == pods[i]) & (data[diff_col] == diff_val)]
-                if filtered.empty:
-                    filtered = data.loc[data[col] == pods[i]]
-                data = filtered if not filtered.empty else data
+            distances = np.abs(self.pod_matrix - current_pods).sum(axis=1)
+            min_distance = distances.min()
+            candidate_indices = np.where(distances == min_distance)[0]
 
-            sample = data.sample()
+            chosen_index = np.random.choice(candidate_indices)
+            sample = self.df.iloc[chosen_index]
 
-        for i in range(len(DEPLOYMENTS)):
-            svc = get_svc(DEPLOYMENTS[i])
-            self.deploymentList[i].cpu_usage = float(sample[svc + '_cpu_usage'].values[0])
-            self.deploymentList[i].mem_usage = float(sample[svc + '_mem_usage'].values[0])
-            self.deploymentList[i].received_traffic = float(sample[svc + '_traffic_in'].values[0])
-            self.deploymentList[i].transmit_traffic = float(sample[svc + '_traffic_out'].values[0])
-            self.deploymentList[i].latency = float(
-                "{:.3f}".format(sample[svc + '_latency'].values[0]))
+        self.current_sample = sample
+        self._apply_sample_to_deployments(sample, initialize_previous=False)
+        return
 
-        for d in self.deploymentList:
-            d.update_replicas()
+    def _apply_sample_to_deployments(self, sample, initialize_previous=False):
+        for i, dep_name in enumerate(DEPLOYMENTS):
+            dep = self.deploymentList[i]
+
+            sampled_num_pods = int(round(float(sample[f"{dep_name}_num_pods"])))
+            sampled_desired = int(round(float(sample[f"{dep_name}_desired_replicas"])))
+
+            sampled_num_pods = max(self.min_pods, min(self.max_pods, sampled_num_pods))
+            sampled_desired = max(self.min_pods, min(self.max_pods, sampled_desired))
+
+            if initialize_previous:
+                dep.num_previous_pods = sampled_num_pods
+            else:
+                dep.num_previous_pods = dep.num_pods
+
+            dep.num_pods = sampled_num_pods
+            dep.desired_replicas = sampled_desired
+            dep.cpu_usage = float(sample[f"{dep_name}_cpu_usage"])
+            dep.mem_usage = float(sample[f"{dep_name}_mem_usage"])
+            dep.received_traffic = float(sample[f"{dep_name}_traffic_in"])
+            dep.transmit_traffic = float(sample[f"{dep_name}_traffic_out"])
+            dep.latency = float(sample[f"{dep_name}_latency"])
 
     def save_obs_to_csv(self, obs_file, obs, date, latency):
-        def get_svc(name):
-            return name + 'service' if name != 'web' else 'webservice'
-
         fields = ['date']
         for d in self.deploymentList:
-            svc = get_svc(d.name)
-            fields += [svc + '_num_pods', svc + '_desired_replicas',
-                    svc + '_cpu_usage', svc + '_mem_usage',
-                    svc + '_traffic_in', svc + '_traffic_out', svc + '_latency']
+            fields.extend([
+                d.name + '_num_pods',
+                d.name + '_desired_replicas',
+                d.name + '_cpu_usage',
+                d.name + '_mem_usage',
+                d.name + '_traffic_in',
+                d.name + '_traffic_out',
+                d.name + '_latency'
+            ])
 
-        file_exists = os.path.isfile(obs_file) and os.path.getsize(obs_file) > 0
-        file = open(obs_file, 'a+', newline='')
-        with file:
+        file_exists = False
+        try:
+            with open(obs_file, 'r', newline=''):
+                file_exists = True
+        except FileNotFoundError:
+            file_exists = False
+
+        row = {'date': date}
+        idx = 0
+        for d in self.deploymentList:
+            row[d.name + '_num_pods'] = int(round(float(obs[idx]))); idx += 1
+            row[d.name + '_desired_replicas'] = int(round(float(obs[idx]))); idx += 1
+            row[d.name + '_cpu_usage'] = float(obs[idx]); idx += 1
+            row[d.name + '_mem_usage'] = float(obs[idx]); idx += 1
+            row[d.name + '_traffic_in'] = float(obs[idx]); idx += 1
+            row[d.name + '_traffic_out'] = float(obs[idx]); idx += 1
+            row[d.name + '_latency'] = float(obs[idx]); idx += 1
+
+        with open(obs_file, 'a+', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=fields)
             if not file_exists:
                 writer.writeheader()
-            row = {'date': date}
-            for i, d in enumerate(self.deploymentList):
-                svc = get_svc(d.name)
-                base = i * 6
-                row[svc + '_num_pods'] = int(obs[base])
-                row[svc + '_desired_replicas'] = int(obs[base + 1])
-                row[svc + '_cpu_usage'] = float(obs[base + 2])
-                row[svc + '_mem_usage'] = float(obs[base + 3])
-                row[svc + '_traffic_in'] = float(obs[base + 4])
-                row[svc + '_traffic_out'] = float(obs[base + 5])
-                row[svc + '_latency'] = float("{:.3f}".format(latency))
             writer.writerow(row)
+
+        return
