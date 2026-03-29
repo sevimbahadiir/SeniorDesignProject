@@ -308,7 +308,7 @@ MAX_PODS = 5
 |-----|-----------|---------|------|---------------|---------------|
 | Run 1 | 150 | `-r 10` | 60 dk | `locust -f robot-shop.py --host=http://localhost:8080 --headless -u 150 -r 10` | `istio_robot_shop_rl_dataset_v2.csv` |
 | Run 2 | 80 | `-r 5` | 60 dk | `locust -f robot-shop.py --host=http://localhost:8080 --headless -u 80 -r 5` | `istio_robot_shop_rl_dataset_80user.csv` |
-| Run 3 | 40 | `-r 3` | 120 dk | `locust -f robot-shop.py --host=http://localhost:8080 --headless -u 40 -r 3` | `istio_robot_shop_rl_dataset_40user.csv` |
+| Run 3 | 40 | `-r 5` | 120 dk | `locust -f robot-shop.py --host=http://localhost:8080 --headless -u 40 -r 3` | `istio_robot_shop_rl_dataset_40user.csv` |
 | Run 4 | 120 | `-r 8` | 120 dk | `locust -f robot-shop.py --host=http://localhost:8080 --headless -u 120 -r 8` | `istio_robot_shop_rl_dataset_120user.csv` |
 | Run 5 | 200 | `-r 10` | 120 dk | `locust -f robot-shop.py --host=http://localhost:8080 --headless -u 200 -r 10` | `istio_robot_shop_rl_dataset_200user.csv` |
 
