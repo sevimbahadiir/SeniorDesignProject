@@ -358,8 +358,8 @@ def train_mappo(sar_df, dt_model, scaler, reward_config,
             train_batch_size=500,
             use_gae=True,
         )
-        .rollouts(
-            num_rollout_workers=0,  # single worker for reproducibility
+        .env_runners(
+            num_env_runners=0,  # single worker for reproducibility
         )
         .resources(
             num_gpus=0,
