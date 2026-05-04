@@ -353,9 +353,9 @@ def train_mappo(sar_df, dt_model, scaler, reward_config,
             lambda_=0.95,
             clip_param=0.2,
             entropy_coeff=0.01,
-            num_sgd_iter=10,
-            sgd_minibatch_size=64,
-            train_batch_size=2000,
+            num_epochs=10,
+            minibatch_size=64,
+            train_batch_size=500,
             use_gae=True,
         )
         .rollouts(
