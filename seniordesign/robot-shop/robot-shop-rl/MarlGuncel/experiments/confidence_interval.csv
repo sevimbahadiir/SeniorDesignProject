@@ -1,0 +1,2 @@
+n_seeds,mean,std,se,ci95_low,ci95_high,ci90_low,ci90_high,all_positive
+5,4.638,2.261,1.011,1.83,7.445,2.482,6.793,True

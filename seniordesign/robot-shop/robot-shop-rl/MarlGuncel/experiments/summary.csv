@@ -1,0 +1,5 @@
+deney,bulgu,akademik_deger
+Stabilite (5 seed),"Mean=+4.64, Std=2.02, CV=43.6%",Tekrarlanabilirlik kanıtı
+Convergence Analizi,Yakınsayan: [],Episode yeterliliği kanıtı
+Hyperparameter Search,"En iyi: lr=3e-04, epu=3",Parametre seçimi justification
+Reward Ablation,En iyi config: 'Shipping düşük (0.5)' (+9.25),Reward tasarımı justification
