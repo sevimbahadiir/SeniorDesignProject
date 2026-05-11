@@ -1,0 +1,32 @@
+{
+  "cart": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "explanation": ""
+  },
+  "catalogue": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "explanation": ""
+  },
+  "payment": {
+    "diagnosis": "Reward Excluded (Option C)",
+    "severity": "info",
+    "explanation": ""
+  },
+  "shipping": {
+    "diagnosis": "Pod-Insensitive Bottleneck",
+    "severity": "critical",
+    "explanation": ""
+  },
+  "ratings": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "explanation": ""
+  },
+  "user": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "explanation": ""
+  }
+}

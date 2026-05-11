@@ -1,0 +1,7 @@
+service,diagnosis,severity,action,latency_ms,p50_ms,latency_ratio,pod_count,cpu_norm,confidence,pct_improvement
+cart,marl_optimized,ok,scale_down,141.2,51.82,2.73,5.1,0.102,0.876,32.9
+catalogue,marl_optimized,ok,scale_up,73.7,28.1,2.62,5.3,0.105,0.926,48.2
+payment,reward_excluded,info,keep,1156.7,2672.94,0.43,4.5,0.115,0.557,-85.6
+shipping,pod_insensitive_bottleneck,critical,scale_up,19497.4,16948.92,1.15,4.7,0.568,0.781,-14.3
+ratings,marl_optimized,ok,scale_down,967.7,661.77,1.46,4.6,0.095,0.584,19.9
+user,marl_optimized,ok,scale_up,23.8,11.62,2.05,5.1,0.148,0.956,58.4

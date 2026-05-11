@@ -1,0 +1,7 @@
+service,dominant_action,surrogate_accuracy,n_classes
+cart,scale_down,1.0,1
+catalogue,scale_up,1.0,1
+payment,keep,1.0,1
+shipping,scale_up,1.0,1
+ratings,scale_down,1.0,1
+user,scale_up,1.0,1

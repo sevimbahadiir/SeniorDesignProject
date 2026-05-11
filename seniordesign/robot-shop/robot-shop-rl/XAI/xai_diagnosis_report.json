@@ -1,0 +1,142 @@
+{
+  "cart": {
+    "diagnosis": "marl_optimized",
+    "severity": "ok",
+    "action": "scale_down",
+    "confidence": 0.876,
+    "evidence": [
+      "MARL latency iyileştirmesi: 187ms → 126ms (+32.9%)",
+      "Mevcut politika: scale_down (güven: 0.88)"
+    ],
+    "details": {
+      "latency_ms": 141.2,
+      "p50_ms": 51.82,
+      "latency_ratio": 2.73,
+      "pod_count": 5.1,
+      "cpu_norm": 0.102,
+      "action": "scale_down",
+      "in_reward": true,
+      "ippo_lat_ms": 125.5,
+      "rb_lat_ms": 187.0,
+      "pct_improvement": 32.9,
+      "confidence": 0.876
+    }
+  },
+  "catalogue": {
+    "diagnosis": "marl_optimized",
+    "severity": "ok",
+    "action": "scale_up",
+    "confidence": 0.926,
+    "evidence": [
+      "MARL latency iyileştirmesi: 119ms → 62ms (+48.2%)",
+      "Mevcut politika: scale_up (güven: 0.93)"
+    ],
+    "details": {
+      "latency_ms": 73.7,
+      "p50_ms": 28.1,
+      "latency_ratio": 2.62,
+      "pod_count": 5.3,
+      "cpu_norm": 0.105,
+      "action": "scale_up",
+      "in_reward": true,
+      "ippo_lat_ms": 61.7,
+      "rb_lat_ms": 119.1,
+      "pct_improvement": 48.2,
+      "confidence": 0.926
+    }
+  },
+  "payment": {
+    "diagnosis": "reward_excluded",
+    "severity": "info",
+    "action": "keep",
+    "confidence": 0.557,
+    "evidence": [
+      "Reward dışı servis (Option C)",
+      "Latency: 1157ms — izleniyor ama optimize edilmiyor"
+    ],
+    "details": {
+      "latency_ms": 1156.7,
+      "p50_ms": 2672.94,
+      "latency_ratio": 0.43,
+      "pod_count": 4.5,
+      "cpu_norm": 0.115,
+      "action": "keep",
+      "in_reward": false,
+      "ippo_lat_ms": 1292.4,
+      "rb_lat_ms": 696.2,
+      "pct_improvement": -85.6,
+      "confidence": 0.557
+    }
+  },
+  "shipping": {
+    "diagnosis": "pod_insensitive_bottleneck",
+    "severity": "critical",
+    "action": "scale_up",
+    "confidence": 0.781,
+    "evidence": [
+      "Latency 19497ms > p50 (16949ms)",
+      "CPU normalize: 0.57 — yüksek yük değil, I/O-bound",
+      "Scale-up etkisiz: DB/I/O bottleneck (action space sınırı)",
+      "MARL vs Rule-based: 19996ms vs 17493ms (+2503ms)"
+    ],
+    "details": {
+      "latency_ms": 19497.4,
+      "p50_ms": 16948.92,
+      "latency_ratio": 1.15,
+      "pod_count": 4.7,
+      "cpu_norm": 0.568,
+      "action": "scale_up",
+      "in_reward": true,
+      "ippo_lat_ms": 19996.0,
+      "rb_lat_ms": 17492.9,
+      "pct_improvement": -14.3,
+      "confidence": 0.781
+    }
+  },
+  "ratings": {
+    "diagnosis": "marl_optimized",
+    "severity": "ok",
+    "action": "scale_down",
+    "confidence": 0.584,
+    "evidence": [
+      "MARL latency iyileştirmesi: 1112ms → 891ms (+19.9%)",
+      "Mevcut politika: scale_down (güven: 0.58)"
+    ],
+    "details": {
+      "latency_ms": 967.7,
+      "p50_ms": 661.77,
+      "latency_ratio": 1.46,
+      "pod_count": 4.6,
+      "cpu_norm": 0.095,
+      "action": "scale_down",
+      "in_reward": true,
+      "ippo_lat_ms": 890.9,
+      "rb_lat_ms": 1112.2,
+      "pct_improvement": 19.9,
+      "confidence": 0.584
+    }
+  },
+  "user": {
+    "diagnosis": "marl_optimized",
+    "severity": "ok",
+    "action": "scale_up",
+    "confidence": 0.956,
+    "evidence": [
+      "MARL latency iyileştirmesi: 47ms → 20ms (+58.4%)",
+      "Mevcut politika: scale_up (güven: 0.96)"
+    ],
+    "details": {
+      "latency_ms": 23.8,
+      "p50_ms": 11.62,
+      "latency_ratio": 2.05,
+      "pod_count": 5.1,
+      "cpu_norm": 0.148,
+      "action": "scale_up",
+      "in_reward": true,
+      "ippo_lat_ms": 19.7,
+      "rb_lat_ms": 47.3,
+      "pct_improvement": 58.4,
+      "confidence": 0.956
+    }
+  }
+}

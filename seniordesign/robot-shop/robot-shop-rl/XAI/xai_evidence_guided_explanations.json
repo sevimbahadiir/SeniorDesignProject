@@ -1,0 +1,230 @@
+{
+  "cart": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter_openai/gpt-oss-120b:free",
+    "explanation": "The MARL controller has selected a scale‑down action for the *cart* service with a confidence of 0.876, and the rule‑based evidence reports a latency improvement from 187 ms to 126 ms (≈32.9 % reduction). Despite this improvement, the current observed latency of 141.2 ms remains above the p50 target of 51.82 ms (2.73× the threshold), which may indicate a residual monitoring point rather than a failure of the optimization. Feature importance analysis highlights that the number of *cart* pods, the number of *catalogue* pods, and the memory usage of *cart* are the most influential variance signals, suggesting that pod count and memory consumption are key variables in the observed latency behavior. The relatively low CPU utilization (0.102 normalized) and modest pod count (≈5) are consistent with the chosen scale‑down policy, yet the latency gap persists. Continued observation of latency trends in relation to pod‑count and memory metrics is therefore warranted.\n\n*Recommendation:* instrument ongoing monitoring of latency, pod variance, and memory usage to validate whether further adjustments to the scaling policy reduce the latency gap.",
+    "top_features": [
+      {
+        "feature": "★cart_num_pods",
+        "score": 1.0,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "→catalogue_num_pods",
+        "score": 0.892,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "→shipping_cpu_usage",
+        "score": 0.585,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "→shipping_latency",
+        "score": 0.526,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "★cart_mem_usage",
+        "score": 0.48,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      }
+    ]
+  },
+  "catalogue": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter_openai/gpt-oss-120b:free",
+    "explanation": "The XAI output indicates that the MARL controller has selected a scale‑up action for the *catalogue* microservice with a high confidence (0.926), and the rule‑based evidence reports a latency improvement from 119 ms to 62 ms, corresponding to a 48.2 % reduction. Despite this improvement, the current observed latency (73.7 ms) remains above the p50 target of 28.1 ms, representing a 2.62‑fold excess, which may be a point for continued monitoring. Feature importance signals highlight variance in the number of pods for the *cart* and *catalogue* services, as well as latency and memory usage metrics for *ratings* and *cart*, suggesting these dimensions are influential in the MARL decision. The normalized CPU utilization (0.105) and the average pod count (5.3) are low, which is consistent with the system having capacity to accommodate further scaling if needed. Overall, the evidence supports that the MARL policy has positively impacted latency, though a residual gap persists.\n\n*Recommendation:* Continuously record latency, pod‑count variance, and related resource metrics to validate whether the observed latency trend converges toward the p50 threshold under the current scaling policy.",
+    "top_features": [
+      {
+        "feature": "→cart_num_pods",
+        "score": 1.0,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "★catalogue_num_pods",
+        "score": 0.892,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→ratings_latency",
+        "score": 0.841,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→cart_mem_usage",
+        "score": 0.48,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→ratings_num_pods",
+        "score": 0.358,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      }
+    ]
+  },
+  "payment": {
+    "diagnosis": "Reward Excluded",
+    "severity": "info",
+    "method": "openrouter_openai/gpt-oss-120b:free",
+    "explanation": "The XAI output indicates that the payment service is classified under the “Reward Excluded” rule (Option C), meaning that its latency is being monitored but not currently targeted for optimization. The observed latency of 1156.7 ms is well below the p50 threshold of 2672.94 ms (≈0.43×), which suggests that the service is meeting its performance target at present. Feature‑importance analysis shows that the variance of the payment_num_pods has the highest relative score, while variances in several shipping‑related metrics (CPU usage, latency, pod count, request rate) also contribute, consistent with the rule‑based evidence that the payment service is not the primary focus of reward‑driven scaling. CPU utilization (0.115) and the average pod count (4.5) are modest, further supporting the interpretation that the current resource allocation is sufficient for the observed load.  \n\n**Recommendation:** Continue systematic monitoring of payment latency and the highlighted shipping‑service metrics to validate that the “Reward Excluded” status remains appropriate as workload patterns evolve.",
+    "top_features": [
+      {
+        "feature": "★payment_num_pods",
+        "score": 1.0,
+        "importance_type": "variance",
+        "dominant_action": "keep"
+      },
+      {
+        "feature": "→shipping_cpu_usage",
+        "score": 0.793,
+        "importance_type": "variance",
+        "dominant_action": "keep"
+      },
+      {
+        "feature": "→shipping_latency",
+        "score": 0.712,
+        "importance_type": "variance",
+        "dominant_action": "keep"
+      },
+      {
+        "feature": "→shipping_num_pods",
+        "score": 0.635,
+        "importance_type": "variance",
+        "dominant_action": "keep"
+      },
+      {
+        "feature": "→shipping_request_rate",
+        "score": 0.528,
+        "importance_type": "variance",
+        "dominant_action": "keep"
+      }
+    ]
+  },
+  "shipping": {
+    "diagnosis": "Pod-Insensitive Bottleneck",
+    "severity": "critical",
+    "method": "openrouter_openai/gpt-oss-120b:free",
+    "explanation": "The observed latency of 19 497 ms exceeds the p50 threshold of 16 949 ms, indicating a residual performance gap that warrants continued monitoring. The normalized CPU usage of 0.57 suggests that the service is not CPU‑bound but rather limited by I/O or database interactions, consistent with the rule‑based evidence that scaling up pods is ineffective for this bottleneck. Feature importance analysis highlights variance in the number of pods for the cart and payment services, as well as shipping CPU usage and latency, which aligns with the diagnosis of a pod‑insensitive bottleneck. The MARL‑suggested scale‑up action achieved a latency of 19 996 ms, which remains higher than the rule‑based baseline of 17 493 ms, further supporting the inference that additional pods do not alleviate the underlying I/O constraint. Consequently, the system’s performance should be monitored for I/O and database metrics to validate whether alternative mitigation strategies become necessary.  \n\n*Recommendation: augment the monitoring dashboard with detailed I/O and database latency counters to enable finer‑grained diagnosis of the persistent bottleneck.*",
+    "top_features": [
+      {
+        "feature": "→cart_num_pods",
+        "score": 1.0,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→payment_num_pods",
+        "score": 0.738,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "★shipping_cpu_usage",
+        "score": 0.585,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "★shipping_latency",
+        "score": 0.526,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→cart_mem_usage",
+        "score": 0.48,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      }
+    ]
+  },
+  "ratings": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter_openai/gpt-oss-120b:free",
+    "explanation": "The MARL‑derived policy for the *ratings* microservice recommends a scale‑down action with a confidence of 0.58, and the rule‑based evidence indicates that the MARL optimization reduced observed latency from 1112 ms to 891 ms, a relative improvement of approximately 19.9 %. Despite this improvement, the current latency of 967.7 ms remains 1.46 × the p50 target of 661.77 ms, suggesting a residual monitoring point rather than a definitive failure. Feature importance analysis shows that the number of pods in the *catalogue* service (variance score = 1.0) and the *ratings* latency itself (variance score = 0.943) are the most influential signals, with *ratings* pod count, *catalogue* latency, and *catalogue* memory usage also contributing. The low normalized CPU utilization (0.095) and modest average pod count (≈4.6) are consistent with the scale‑down recommendation but do not fully explain the remaining latency gap. Continued observation of the latency trend in conjunction with the highlighted variance‑driven features is warranted.  \n\n*Recommendation*: augment the monitoring dashboard to track the variance of *catalogue* pod count and *ratings* latency over time to validate whether further latency reductions align with the MARL policy.",
+    "top_features": [
+      {
+        "feature": "→catalogue_num_pods",
+        "score": 1.0,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "★ratings_latency",
+        "score": 0.943,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "★ratings_num_pods",
+        "score": 0.401,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "→catalogue_latency",
+        "score": 0.381,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      },
+      {
+        "feature": "→catalogue_mem_usage",
+        "score": 0.298,
+        "importance_type": "variance",
+        "dominant_action": "scale_down"
+      }
+    ]
+  },
+  "user": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter_openai/gpt-oss-120b:free",
+    "explanation": "The XAI output indicates that the MARL controller has applied a scale‑up action (confidence 0.956) and that the observed latency for the *user* service is 23.8 ms, which remains above the p50 target of 11.62 ms (≈2.05×). The rule‑based evidence reports a prior MARL‑driven latency improvement from 47 ms to 20 ms (≈58 % reduction), suggesting that the current policy continues to have a beneficial effect despite the remaining gap. Feature‑importance signals highlight the number of pods for both *cart* and *user* services, as well as memory usage for these services, as the most salient variance contributors, which is consistent with the scale‑up decision. CPU utilization is low (0.148 normalized) and the pod count is modest (≈5), indicating that additional resources have already been provisioned but that latency has not yet reached the p50 threshold. Consequently, the system appears to be operating under an optimized MARL policy while still presenting a monitoring point for latency convergence.\n\n**Recommendation:** continue systematic monitoring of latency and pod‑related variance metrics to validate whether further adjustments to the MARL policy are warranted.",
+    "top_features": [
+      {
+        "feature": "→cart_num_pods",
+        "score": 1.0,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "★user_num_pods",
+        "score": 0.75,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→cart_mem_usage",
+        "score": 0.48,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "★user_mem_usage",
+        "score": 0.478,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      },
+      {
+        "feature": "→cart_latency",
+        "score": 0.319,
+        "importance_type": "variance",
+        "dominant_action": "scale_up"
+      }
+    ]
+  }
+}
