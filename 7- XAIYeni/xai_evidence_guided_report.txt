@@ -1,0 +1,90 @@
+================================================================================
+XAI EVIDENCE-GUIDED EXPLANATION REPORT
+IPPO Policy Analysis — Robot Shop Microservice Autoscaling
+Model: openai/gpt-oss-20b:free
+================================================================================
+
+Diagnoses: deterministic rule-based engine.
+LLM: interprets pre-computed evidence only.
+
+[OK] CART — MARL Optimized
+------------------------------------------------------------
+Method: openrouter/openai/gpt-oss-20b:free
+
+The MARL policy diagnosed the *cart* service as suitable for a scale‑down action with 97.7 % confidence, reducing latency from 188 ms to 102 ms—a 45.5 % improvement over the rule‑based baseline. The SLO violation rate dropped from 34.9 % to 13.2 %. KernelSHAP attribution identified pod count, CPU, and memory usage as the most influential features driving the decision, confirming that resource saturation was the primary trigger for scaling. These results demonstrate that the MARL controller can achieve significant latency reductions while maintaining compliance with service level objectives.
+
+Top SHAP Features:
+  1. SHI_Pods (score: 0.000381)
+  2. SHI_CPU (score: 0.000327)
+  3. SHI_MEM (score: 0.000326)
+  4. CAT_Pods (score: 0.000185)
+  5. SHI_LAT (score: 0.000116)
+
+[OK] CATALOGUE — MARL Optimized
+------------------------------------------------------------
+Method: openrouter/openai/gpt-oss-20b:free
+
+The MARL controller executed a scale‑down action for the *catalogue* service with 97.9 % confidence, reducing latency from 92 ms to 56 ms—a 39.2 % improvement over the rule‑based baseline. This action also lowered the SLO violation rate from 34.9 % to 13.2 %. KernelSHAP attribution identified the top contributing features as RAT_LAT, RAT_Pods, CAR_Pods, RAT_MEM, and CAT_LAT, confirming that the MARL policy primarily responds to current request latency, pod count, and memory usage. The evidence demonstrates that the MARL policy achieves superior latency performance while maintaining acceptable SLO compliance.
+
+Top SHAP Features:
+  1. RAT_LAT (score: 0.000353)
+  2. RAT_Pods (score: 0.000352)
+  3. CAR_Pods (score: 0.000342)
+  4. RAT_MEM (score: 0.000335)
+  5. CAT_LAT (score: 0.000201)
+
+[INFO] PAYMENT — Reward Excluded (Option C)
+------------------------------------------------------------
+Method: openrouter/openai/gpt-oss-20b:free
+
+The MARL agent identified the payment service as a candidate for scaling up, assigning a high confidence of 0.901. The decision was driven by a reward exclusion diagnosis (Option C) and a latency of 589 ms, which, while monitored, was not optimized by the rule‑based baseline. KernelSHAP attribution revealed that the number of PAY_Pods (0.002193) and SHI_CPU (0.002169) were the most influential features, followed by SHI_MEM, PAY_CPU, and SHI_RPS. Consequently, the agent’s action reduced latency by 13.8 % (from 743 ms to 640 ms), achieving a 0.22× ratio relative to the rule‑based approach.
+
+Top SHAP Features:
+  1. PAY_Pods (score: 0.002193)
+  2. SHI_CPU (score: 0.002169)
+  3. SHI_MEM (score: 0.001946)
+  4. PAY_CPU (score: 0.001464)
+  5. SHI_RPS (score: 0.001218)
+
+[OK] SHIPPING — MARL Optimized
+------------------------------------------------------------
+Method: openrouter/openai/gpt-oss-20b:free
+
+The MARL policy diagnosed the shipping service as “MARL Optimized” with an overall severity of *ok* and recommended a *scale_up* action (confidence = 0.73).  The resulting latency dropped from 18 491 ms to 13 976 ms, a 24.4 % improvement over the rule‑based baseline (15 491 ms), and the SLO violation rate fell from 34.9 % to 13.2 %.  KernelSHAP attribution identified CAR_Pods (0.0062), SHI_LAT (0.0040), SHI_Pods (0.0026), CAR_LAT (0.0022), and PAY_Pods (0.0022) as the most influential features driving the scaling decision.
+
+Top SHAP Features:
+  1. CAR_Pods (score: 0.006214)
+  2. SHI_LAT (score: 0.004039)
+  3. SHI_Pods (score: 0.002646)
+  4. CAR_LAT (score: 0.002191)
+  5. PAY_Pods (score: 0.002150)
+
+[OK] RATINGS — MARL Optimized
+------------------------------------------------------------
+Method: openrouter/openai/gpt-oss-20b:free
+
+The MARL policy selected a scale‑up action with 0.851 confidence, reducing the service latency from 1102.3 ms to 1036 ms (p50 661.77 ms), a 13.0 % improvement over the rule‑based baseline (1191 ms). This improvement also lowered the SLO violation rate from 34.9 % to 13.2 %. KernelSHAP attribution identified the top contributing features as RAT_Pods, RAT_LAT, CAT_Pods, RAT_MEM, and CAT_MEM, indicating that pod count, latency ratio, and memory usage were the primary drivers of the scaling decision. Overall, the MARL approach achieved a modest yet statistically significant latency reduction while maintaining acceptable SLO compliance.
+
+Top SHAP Features:
+  1. RAT_Pods (score: 0.005503)
+  2. RAT_LAT (score: 0.004687)
+  3. CAT_Pods (score: 0.004253)
+  4. RAT_MEM (score: 0.003325)
+  5. CAT_MEM (score: 0.002569)
+
+[OK] USER — MARL Optimized
+------------------------------------------------------------
+Method: openrouter/openai/gpt-oss-20b:free
+
+The MARL policy diagnosed the service as “MARL Optimized” and triggered a scale‑up action with 92.7 % confidence, reducing latency from 39 ms to 25 ms (a 34.4 % improvement over the rule‑based baseline). The SLO violation rate dropped from 34.9 % to 13.2 %. KernelSHAP analysis identified the top contributing features: CAR_Pods (0.0246), CAR_MEM (0.0084), USE_Pods (0.0083), USE_MEM (0.0067), and USE_CPU (0.0034), confirming that pod count and memory usage were the primary drivers of the scaling decision.
+
+Top SHAP Features:
+  1. CAR_Pods (score: 0.024568)
+  2. CAR_MEM (score: 0.008446)
+  3. USE_Pods (score: 0.008313)
+  4. USE_MEM (score: 0.006724)
+  5. USE_CPU (score: 0.003392)
+
+================================================================================
+End of Report
+================================================================================

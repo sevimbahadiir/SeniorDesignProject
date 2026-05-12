@@ -1,0 +1,389 @@
+{
+  "cart": {
+    "obs_0": {
+      "service": "cart",
+      "metric": "num_pods",
+      "role": "self"
+    },
+    "obs_1": {
+      "service": "cart",
+      "metric": "cpu_usage",
+      "role": "self"
+    },
+    "obs_2": {
+      "service": "cart",
+      "metric": "mem_usage",
+      "role": "self"
+    },
+    "obs_3": {
+      "service": "cart",
+      "metric": "request_rate",
+      "role": "self"
+    },
+    "obs_4": {
+      "service": "cart",
+      "metric": "latency",
+      "role": "self"
+    },
+    "obs_5": {
+      "service": "catalogue",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_6": {
+      "service": "catalogue",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_7": {
+      "service": "catalogue",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_8": {
+      "service": "catalogue",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_9": {
+      "service": "catalogue",
+      "metric": "latency",
+      "role": "neighbor"
+    },
+    "obs_10": {
+      "service": "shipping",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_11": {
+      "service": "shipping",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_12": {
+      "service": "shipping",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_13": {
+      "service": "shipping",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_14": {
+      "service": "shipping",
+      "metric": "latency",
+      "role": "neighbor"
+    }
+  },
+  "catalogue": {
+    "obs_0": {
+      "service": "catalogue",
+      "metric": "num_pods",
+      "role": "self"
+    },
+    "obs_1": {
+      "service": "catalogue",
+      "metric": "cpu_usage",
+      "role": "self"
+    },
+    "obs_2": {
+      "service": "catalogue",
+      "metric": "mem_usage",
+      "role": "self"
+    },
+    "obs_3": {
+      "service": "catalogue",
+      "metric": "request_rate",
+      "role": "self"
+    },
+    "obs_4": {
+      "service": "catalogue",
+      "metric": "latency",
+      "role": "self"
+    },
+    "obs_5": {
+      "service": "ratings",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_6": {
+      "service": "ratings",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_7": {
+      "service": "ratings",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_8": {
+      "service": "ratings",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_9": {
+      "service": "ratings",
+      "metric": "latency",
+      "role": "neighbor"
+    },
+    "obs_10": {
+      "service": "cart",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_11": {
+      "service": "cart",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_12": {
+      "service": "cart",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_13": {
+      "service": "cart",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_14": {
+      "service": "cart",
+      "metric": "latency",
+      "role": "neighbor"
+    }
+  },
+  "payment": {
+    "obs_0": {
+      "service": "payment",
+      "metric": "num_pods",
+      "role": "self"
+    },
+    "obs_1": {
+      "service": "payment",
+      "metric": "cpu_usage",
+      "role": "self"
+    },
+    "obs_2": {
+      "service": "payment",
+      "metric": "mem_usage",
+      "role": "self"
+    },
+    "obs_3": {
+      "service": "payment",
+      "metric": "request_rate",
+      "role": "self"
+    },
+    "obs_4": {
+      "service": "payment",
+      "metric": "latency",
+      "role": "self"
+    },
+    "obs_5": {
+      "service": "shipping",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_6": {
+      "service": "shipping",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_7": {
+      "service": "shipping",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_8": {
+      "service": "shipping",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_9": {
+      "service": "shipping",
+      "metric": "latency",
+      "role": "neighbor"
+    }
+  },
+  "shipping": {
+    "obs_0": {
+      "service": "shipping",
+      "metric": "num_pods",
+      "role": "self"
+    },
+    "obs_1": {
+      "service": "shipping",
+      "metric": "cpu_usage",
+      "role": "self"
+    },
+    "obs_2": {
+      "service": "shipping",
+      "metric": "mem_usage",
+      "role": "self"
+    },
+    "obs_3": {
+      "service": "shipping",
+      "metric": "request_rate",
+      "role": "self"
+    },
+    "obs_4": {
+      "service": "shipping",
+      "metric": "latency",
+      "role": "self"
+    },
+    "obs_5": {
+      "service": "cart",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_6": {
+      "service": "cart",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_7": {
+      "service": "cart",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_8": {
+      "service": "cart",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_9": {
+      "service": "cart",
+      "metric": "latency",
+      "role": "neighbor"
+    },
+    "obs_10": {
+      "service": "payment",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_11": {
+      "service": "payment",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_12": {
+      "service": "payment",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_13": {
+      "service": "payment",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_14": {
+      "service": "payment",
+      "metric": "latency",
+      "role": "neighbor"
+    }
+  },
+  "ratings": {
+    "obs_0": {
+      "service": "ratings",
+      "metric": "num_pods",
+      "role": "self"
+    },
+    "obs_1": {
+      "service": "ratings",
+      "metric": "cpu_usage",
+      "role": "self"
+    },
+    "obs_2": {
+      "service": "ratings",
+      "metric": "mem_usage",
+      "role": "self"
+    },
+    "obs_3": {
+      "service": "ratings",
+      "metric": "request_rate",
+      "role": "self"
+    },
+    "obs_4": {
+      "service": "ratings",
+      "metric": "latency",
+      "role": "self"
+    },
+    "obs_5": {
+      "service": "catalogue",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_6": {
+      "service": "catalogue",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_7": {
+      "service": "catalogue",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_8": {
+      "service": "catalogue",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_9": {
+      "service": "catalogue",
+      "metric": "latency",
+      "role": "neighbor"
+    }
+  },
+  "user": {
+    "obs_0": {
+      "service": "user",
+      "metric": "num_pods",
+      "role": "self"
+    },
+    "obs_1": {
+      "service": "user",
+      "metric": "cpu_usage",
+      "role": "self"
+    },
+    "obs_2": {
+      "service": "user",
+      "metric": "mem_usage",
+      "role": "self"
+    },
+    "obs_3": {
+      "service": "user",
+      "metric": "request_rate",
+      "role": "self"
+    },
+    "obs_4": {
+      "service": "user",
+      "metric": "latency",
+      "role": "self"
+    },
+    "obs_5": {
+      "service": "cart",
+      "metric": "num_pods",
+      "role": "neighbor"
+    },
+    "obs_6": {
+      "service": "cart",
+      "metric": "cpu_usage",
+      "role": "neighbor"
+    },
+    "obs_7": {
+      "service": "cart",
+      "metric": "mem_usage",
+      "role": "neighbor"
+    },
+    "obs_8": {
+      "service": "cart",
+      "metric": "request_rate",
+      "role": "neighbor"
+    },
+    "obs_9": {
+      "service": "cart",
+      "metric": "latency",
+      "role": "neighbor"
+    }
+  }
+}

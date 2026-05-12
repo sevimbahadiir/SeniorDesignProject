@@ -1,0 +1,7 @@
+algo,service,diagnosis,severity,action,latency_ms,p50_ms,pct_improvement,confidence
+ippo,cart,marl_optimized,ok,scale_down,136.1,51.82,45.5,0.977
+ippo,catalogue,marl_optimized,ok,scale_down,73.0,28.1,39.2,0.979
+ippo,payment,reward_excluded,info,scale_up,589.0,2672.94,13.8,0.901
+ippo,shipping,marl_optimized,ok,scale_up,15229.0,16948.92,24.4,0.73
+ippo,ratings,marl_optimized,ok,scale_up,1102.3,661.77,13.0,0.851
+ippo,user,marl_optimized,ok,scale_up,32.5,11.62,34.4,0.927

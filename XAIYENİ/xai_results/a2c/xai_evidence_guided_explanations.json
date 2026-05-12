@@ -1,0 +1,200 @@
+{
+  "cart": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The A2C-based multi‑agent reinforcement learning (MARL) autoscaler achieved a 45.5 % latency reduction for the *cart* service, decreasing the average latency from 188 ms to 102 ms, while maintaining a 13.2 % SLO violation rate—substantially lower than the 34.9 % observed under the rule‑based policy. The policy selected a *scale_down* action with a confidence of 0.909, indicating high certainty that reducing pod count would improve performance. KernelSHAP analysis identified pod‑count features (CAT_Pods, CAR_Pods, SHI_Pods) and resource utilization metrics (SHI_CPU, SHI_MEM) as the most influential contributors to the decision, with pod count ranking first (SHAP = 0.000378). These results demonstrate that the MARL controller can effectively balance resource efficiency and latency objectives in a Kubernetes microservice environment.",
+    "top_features": [
+      {
+        "feature": "CAT_Pods",
+        "score": 0.000378,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_CPU",
+        "score": 0.000371,
+        "rank": 2
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.000367,
+        "rank": 3
+      },
+      {
+        "feature": "SHI_MEM",
+        "score": 0.000261,
+        "rank": 4
+      },
+      {
+        "feature": "SHI_Pods",
+        "score": 0.000234,
+        "rank": 5
+      }
+    ]
+  },
+  "catalogue": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The A2C-based multi‑agent reinforcement learning (MARL) autoscaler achieved a latency reduction of 39.2 % compared to the rule‑based baseline, decreasing the average latency from 92 ms to 56 ms for the catalogue service. The policy decision to scale down was supported by a high confidence score of 0.93, and the observed SLO violation rate dropped from 34.9 % under the rule‑based policy to 13.2 % with MARL. KernelSHAP attribution identified the most influential features as the ratio of pods (RAT_Pods), ratio of memory usage (RAT_MEM), and the number of CAR pods, indicating that pod density and memory pressure were primary drivers of the scaling action. Overall, the evidence demonstrates that the MARL policy effectively balances resource utilization while maintaining service level objectives.",
+    "top_features": [
+      {
+        "feature": "RAT_Pods",
+        "score": 0.002459,
+        "rank": 1
+      },
+      {
+        "feature": "RAT_MEM",
+        "score": 0.001081,
+        "rank": 2
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.001047,
+        "rank": 3
+      },
+      {
+        "feature": "CAT_Pods",
+        "score": 0.000646,
+        "rank": 4
+      },
+      {
+        "feature": "CAR_CPU",
+        "score": 0.000589,
+        "rank": 5
+      }
+    ]
+  },
+  "payment": {
+    "diagnosis": "Reward Excluded (Option C)",
+    "severity": "info",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The A2C MARL autoscaler identified the “Reward Excluded (Option C)” diagnosis for the payment service, assigning a high confidence (0.913) to the scale‑up action. Latency metrics show an average of 589 ms, with a 50th percentile latency of 2,672.94 ms, yielding a 13.8 % improvement over the baseline rule‑based policy. KernelSHAP analysis attributes the decision primarily to the number of payment pods (SHAP = 0.003151), followed by payment memory usage (0.002599) and request rate (0.002028), with secondary contributions from service‑level memory (0.001812) and pods (0.001527). These feature importances corroborate the diagnosis that reward exclusion is the dominant factor driving the scaling recommendation.",
+    "top_features": [
+      {
+        "feature": "PAY_Pods",
+        "score": 0.003151,
+        "rank": 1
+      },
+      {
+        "feature": "PAY_MEM",
+        "score": 0.002599,
+        "rank": 2
+      },
+      {
+        "feature": "PAY_RPS",
+        "score": 0.002028,
+        "rank": 3
+      },
+      {
+        "feature": "SHI_MEM",
+        "score": 0.001812,
+        "rank": 4
+      },
+      {
+        "feature": "SHI_Pods",
+        "score": 0.001527,
+        "rank": 5
+      }
+    ]
+  },
+  "shipping": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The XAI analysis indicates that the A2C-based multi‑agent reinforcement learning policy successfully optimized autoscaling for the shipping service, as evidenced by a 24.4 % latency reduction (from 18,491 ms to 13,976 ms) compared to the rule‑based baseline. The policy’s confidence (0.844) and the observed 13.2 % SLO violation rate—substantially lower than the 34.9 % rate under rule‑based scaling—confirm its effectiveness. KernelSHAP attribution highlights that pod counts for PAY and SHI services, followed by their CPU utilizations, were the most influential features driving the scale‑up decision, underscoring the policy’s focus on resource‑intensive workloads.",
+    "top_features": [
+      {
+        "feature": "PAY_Pods",
+        "score": 0.00277,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_Pods",
+        "score": 0.002337,
+        "rank": 2
+      },
+      {
+        "feature": "PAY_CPU",
+        "score": 0.002302,
+        "rank": 3
+      },
+      {
+        "feature": "SHI_CPU",
+        "score": 0.002278,
+        "rank": 4
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.002226,
+        "rank": 5
+      }
+    ]
+  },
+  "ratings": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The A2C‑based multi‑agent reinforcement learning (MARL) autoscaler diagnosed the service “ratings” as optimally scaled and recommended a scale‑up action with a confidence of 0.785.  The resulting latency dropped to 1102.3 ms, a 13.0 % improvement over the rule‑based baseline, and the Service Level Objective (SLO) violation rate fell from 34.9 % to 13.2 %.  KernelSHAP attribution identified the number of RAT and CAT pods as the most influential features (SHAP values 0.0067 and 0.0038, respectively), followed by RAT and CAT memory usage, confirming that pod count adjustments were the primary driver of the latency reduction.",
+    "top_features": [
+      {
+        "feature": "RAT_Pods",
+        "score": 0.006696,
+        "rank": 1
+      },
+      {
+        "feature": "CAT_Pods",
+        "score": 0.003788,
+        "rank": 2
+      },
+      {
+        "feature": "RAT_MEM",
+        "score": 0.002832,
+        "rank": 3
+      },
+      {
+        "feature": "CAT_MEM",
+        "score": 0.002818,
+        "rank": 4
+      },
+      {
+        "feature": "CAT_CPU",
+        "score": 0.000405,
+        "rank": 5
+      }
+    ]
+  },
+  "user": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The A2C-based multi‑agent reinforcement learning (MARL) autoscaler achieved a 34.4 % latency reduction, decreasing the average response time from 39 ms to 25 ms, while maintaining a low SLO violation rate of 13.2 % compared to 34.9 % under the rule‑based policy. The confidence of the scale‑up decision was 0.862, corroborated by the policy confidence metric. KernelSHAP analysis identified CAR_Pods as the most influential feature (SHAP = 0.004287), followed by memory usage (USE_MEM), pod count (USE_Pods), request per second (USE_RPS), and latency (CAR_LAT), indicating that pod count and resource utilization are primary drivers of the scaling action. These results demonstrate that the MARL approach can effectively balance performance and compliance with service level objectives.",
+    "top_features": [
+      {
+        "feature": "CAR_Pods",
+        "score": 0.004287,
+        "rank": 1
+      },
+      {
+        "feature": "USE_MEM",
+        "score": 0.003222,
+        "rank": 2
+      },
+      {
+        "feature": "USE_Pods",
+        "score": 0.00289,
+        "rank": 3
+      },
+      {
+        "feature": "USE_RPS",
+        "score": 0.001175,
+        "rank": 4
+      },
+      {
+        "feature": "CAR_LAT",
+        "score": 0.000746,
+        "rank": 5
+      }
+    ]
+  }
+}

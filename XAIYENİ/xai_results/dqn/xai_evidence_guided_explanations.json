@@ -1,0 +1,200 @@
+{
+  "cart": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The DQN‑based multi‑agent reinforcement learning (MARL) autoscaler selected the *keep* action for the `cart` service with a confidence of 0.515, resulting in a latency reduction from 188 ms to 175.3 ms (≈ 21 % improvement over the rule‑based baseline). The rule‑based policy would have increased the service’s SLO violation rate from 13.2 % to 34.9 %, whereas the MARL policy maintained the violation rate at 13.2 %. KernelSHAP analysis identified `SHI_LAT` as the most influential feature (SHAP value 0.1106), followed by `SHI_RPS`, `CAR_LAT`, `CAT_LAT`, and `CAT_CPU`, indicating that the current request latency, request rate, and container‑level latency metrics drive the decision to retain the current scaling configuration. These results demonstrate that the MARL policy can achieve latency improvements while keeping SLO violations low, guided by interpretable feature contributions.",
+    "top_features": [
+      {
+        "feature": "SHI_LAT",
+        "score": 0.110642,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_RPS",
+        "score": 0.027321,
+        "rank": 2
+      },
+      {
+        "feature": "CAR_LAT",
+        "score": 0.023045,
+        "rank": 3
+      },
+      {
+        "feature": "CAT_LAT",
+        "score": 0.021389,
+        "rank": 4
+      },
+      {
+        "feature": "CAT_CPU",
+        "score": 0.020576,
+        "rank": 5
+      }
+    ]
+  },
+  "catalogue": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The DQN-based multi‑agent reinforcement learning (MARL) autoscaling policy for the catalogue service achieved a latency reduction of 27.3 % compared to the rule‑based baseline, decreasing the mean latency from 92 ms to 67 ms while maintaining the median latency at 28.1 ms. The policy’s confidence score of 0.467, coupled with a policy confidence of 0.47, indicates moderate certainty in the decision to retain the current scaling configuration. Shapley value analysis reveals that the most influential features driving this decision are the categorical latency metric (CAT_LAT), the ratio latency metric (RAT_LAT), and the categorical request‑per‑second metric (CAT_RPS), with secondary contributions from memory usage (RAT_MEM) and CPU usage (CAT_CPU). The observed reduction in Service Level Objective (SLO) violations from 34.9 % under the rule‑based policy to 13.2 % under the MARL policy further corroborates the effectiveness of the learned scaling strategy.",
+    "top_features": [
+      {
+        "feature": "CAT_LAT",
+        "score": 0.039553,
+        "rank": 1
+      },
+      {
+        "feature": "RAT_LAT",
+        "score": 0.035292,
+        "rank": 2
+      },
+      {
+        "feature": "CAT_RPS",
+        "score": 0.031577,
+        "rank": 3
+      },
+      {
+        "feature": "RAT_MEM",
+        "score": 0.025526,
+        "rank": 4
+      },
+      {
+        "feature": "CAT_CPU",
+        "score": 0.020412,
+        "rank": 5
+      }
+    ]
+  },
+  "payment": {
+    "diagnosis": "Reward Excluded (Option C)",
+    "severity": "info",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The DQN‑based autoscaler selected a scale‑up action for the payment service with a confidence of 0.449, despite the rule‑based baseline showing a 4.3 % latency degradation. The action was driven primarily by the exclusion of the reward signal (Option C), as indicated by the rule evidence “Reward disi servis (Option C)”, and by the observed latency of 664 ms. KernelSHAP analysis highlights that the most influential features were the payment request rate (PAY_RPS), payment latency (PAY_LAT), and the shared CPU usage (SHI_CPU), each contributing positively to the decision. Together, these findings suggest that the model prioritized mitigating high request rates and CPU contention, even though the overall latency improvement relative to the rule‑based policy was negative.",
+    "top_features": [
+      {
+        "feature": "PAY_RPS",
+        "score": 0.082283,
+        "rank": 1
+      },
+      {
+        "feature": "PAY_LAT",
+        "score": 0.05521,
+        "rank": 2
+      },
+      {
+        "feature": "SHI_CPU",
+        "score": 0.055139,
+        "rank": 3
+      },
+      {
+        "feature": "PAY_Pods",
+        "score": 0.027665,
+        "rank": 4
+      },
+      {
+        "feature": "SHI_LAT",
+        "score": 0.027481,
+        "rank": 5
+      }
+    ]
+  },
+  "shipping": {
+    "diagnosis": "Pod-Insensitive Bottleneck",
+    "severity": "critical",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The XAI analysis indicates that the shipping service is experiencing a pod‑insensitive bottleneck, prompting a scale‑up action with a confidence of 0.461. Latency measurements (18472 ms overall, 16949 ms at the 50th percentile) exceed the rule‑based threshold, corroborating the I/O‑bound bottleneck identified in the rule evidence. KernelSHAP attribution highlights PAY_RPS, SHI_LAT, and CAR_Pods as the most influential features, suggesting that high request rates, service‑level interface latency, and the number of CAR pods are primary contributors to the observed delay. Consequently, scaling up the pods is recommended to alleviate the identified bottleneck.",
+    "top_features": [
+      {
+        "feature": "PAY_RPS",
+        "score": 0.039669,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_LAT",
+        "score": 0.036168,
+        "rank": 2
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.032031,
+        "rank": 3
+      },
+      {
+        "feature": "PAY_LAT",
+        "score": 0.028972,
+        "rank": 4
+      },
+      {
+        "feature": "CAR_MEM",
+        "score": 0.027681,
+        "rank": 5
+      }
+    ]
+  },
+  "ratings": {
+    "diagnosis": "Under-Provisioned",
+    "severity": "warning",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The DQN‑based autoscaling policy diagnosed the *ratings* service as under‑provisioned, recommending a scale‑down action with a confidence of 0.644. The observed latency of 1193.1 ms, exceeding 1.2 × p50 (661.77 ms), confirms that the service is not operating reactively, as indicated by the rule‑based evidence. KernelSHAP attribution highlights that the ratio of latency to request rate (RAT_LAT) is the dominant factor driving the decision, followed by request rate per second (CAT_RPS), pod count ratio (RAT_Pods), memory ratio (RAT_MEM), and CPU category (CAT_CPU). These feature importances suggest that the policy is primarily responding to high latency relative to traffic volume, rather than to raw resource utilization metrics.",
+    "top_features": [
+      {
+        "feature": "RAT_LAT",
+        "score": 0.105177,
+        "rank": 1
+      },
+      {
+        "feature": "CAT_RPS",
+        "score": 0.070037,
+        "rank": 2
+      },
+      {
+        "feature": "RAT_Pods",
+        "score": 0.045716,
+        "rank": 3
+      },
+      {
+        "feature": "RAT_MEM",
+        "score": 0.044996,
+        "rank": 4
+      },
+      {
+        "feature": "CAT_CPU",
+        "score": 0.044537,
+        "rank": 5
+      }
+    ]
+  },
+  "user": {
+    "diagnosis": "Under-Provisioned",
+    "severity": "warning",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The XAI analysis indicates that the autoscaling policy has incorrectly suggested a scale‑down action for the “user” service, which is currently under‑provisioned. The latency metric (42.8 ms) exceeds 1.2 times the 50th percentile (11.62 ms), violating the reactive rule and confirming the need for additional resources. KernelSHAP attribution shows that the most influential factors are the container’s memory usage (CAR_MEM) and latency (CAR_LAT), followed by overall memory consumption (USE_MEM), request throughput (USE_RPS), and CPU usage (USE_CPU). These findings suggest that the policy’s confidence (0.424) is based on resource‑intensive features that are not adequately addressed by a simple scale‑down, highlighting a mismatch between the learned policy and the rule‑based baseline.",
+    "top_features": [
+      {
+        "feature": "CAR_MEM",
+        "score": 0.030029,
+        "rank": 1
+      },
+      {
+        "feature": "CAR_LAT",
+        "score": 0.029536,
+        "rank": 2
+      },
+      {
+        "feature": "USE_MEM",
+        "score": 0.026974,
+        "rank": 3
+      },
+      {
+        "feature": "USE_RPS",
+        "score": 0.020438,
+        "rank": 4
+      },
+      {
+        "feature": "USE_CPU",
+        "score": 0.017046,
+        "rank": 5
+      }
+    ]
+  }
+}

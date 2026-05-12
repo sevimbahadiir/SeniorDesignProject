@@ -1,0 +1,200 @@
+{
+  "cart": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The MAPPO‑based multi‑agent reinforcement learning policy identified a scale‑down action for the *cart* service with a confidence of 0.993, resulting in a latency reduction from 188 ms to 102 ms (p50 51.82 ms), a 45.5 % improvement over the rule‑based baseline. The SLO violation rate dropped from 34.9 % to 13.2 %, confirming that the learned policy maintained service level objectives while reducing resource usage. KernelSHAP attribution revealed that the number of pods in the *CAT* and *SHI* namespaces, as well as the *SHI_LAT* metric, were the most influential features driving the decision, underscoring the policy’s sensitivity to both pod counts and latency indicators. These results demonstrate that MAPPO can effectively optimize autoscaling decisions in a Kubernetes environment, achieving significant latency gains with minimal policy confidence.",
+    "top_features": [
+      {
+        "feature": "CAT_Pods",
+        "score": 0.00017,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_Pods",
+        "score": 9.9e-05,
+        "rank": 2
+      },
+      {
+        "feature": "SHI_LAT",
+        "score": 9e-05,
+        "rank": 3
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 8.6e-05,
+        "rank": 4
+      },
+      {
+        "feature": "SHI_CPU",
+        "score": 8.4e-05,
+        "rank": 5
+      }
+    ]
+  },
+  "catalogue": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The MAPPO‑based multi‑agent reinforcement learning (MARL) autoscaler identified the *catalogue* service as a candidate for scaling down, assigning a confidence of 0.942.  The resulting latency improved from 92 ms to 73 ms, a 39.2 % reduction relative to the rule‑based baseline, while the Service Level Objective (SLO) violation rate dropped from 34.9 % to 13.2 %.  KernelSHAP attribution revealed that the most influential features were the rate of pod changes (RAT_Pods) and pod latency (RAT_LAT), followed by memory usage (RAT_MEM), with service‑specific pod rates (CAR_Pods, CAT_Pods) contributing less strongly.  These findings demonstrate that the MARL policy can achieve significant performance gains by judiciously reducing pod counts in response to dynamic workload characteristics.",
+    "top_features": [
+      {
+        "feature": "RAT_Pods",
+        "score": 0.000973,
+        "rank": 1
+      },
+      {
+        "feature": "RAT_LAT",
+        "score": 0.000966,
+        "rank": 2
+      },
+      {
+        "feature": "RAT_MEM",
+        "score": 0.000768,
+        "rank": 3
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.000533,
+        "rank": 4
+      },
+      {
+        "feature": "CAT_Pods",
+        "score": 0.00049,
+        "rank": 5
+      }
+    ]
+  },
+  "payment": {
+    "diagnosis": "Reward Excluded (Option C)",
+    "severity": "info",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The MAPPO MARL autoscaler elected to scale up the payment service with a confidence of 0.995, driven primarily by the exclusion of the reward signal (Option C) as indicated by the rule evidence. The observed latency of 589 ms, which is substantially lower than the median latency (p50 = 2672.94 ms), corroborates the decision to increase capacity, yielding a 13.8 % improvement over the rule‑based baseline. KernelSHAP attribution highlights that the number of payment pods (PAY_Pods) contributed the most to the action, followed by the number of SHI pods (SHI_Pods) and SHI memory usage (SHI_MEM), suggesting that pod count and memory pressure were the dominant factors in the scaling decision.",
+    "top_features": [
+      {
+        "feature": "PAY_Pods",
+        "score": 0.000169,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_Pods",
+        "score": 0.000128,
+        "rank": 2
+      },
+      {
+        "feature": "SHI_MEM",
+        "score": 8.4e-05,
+        "rank": 3
+      },
+      {
+        "feature": "SHI_LAT",
+        "score": 6.3e-05,
+        "rank": 4
+      },
+      {
+        "feature": "SHI_CPU",
+        "score": 5.9e-05,
+        "rank": 5
+      }
+    ]
+  },
+  "shipping": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The MAPPO‑based multi‑agent reinforcement learning (MARL) autoscaler achieved a 24.4 % latency reduction for the shipping service, lowering the median latency from 18 491 ms to 13 976 ms, while maintaining a high confidence (0.961) in the scale‑up action. The SLO violation rate dropped from 34.9 % under the rule‑based policy to 13.2 %, indicating a substantial improvement in service reliability. KernelSHAP attribution revealed that pod count (SHI_Pods) and CPU usage (SHI_CPU) were the most influential features driving the scaling decision, followed by pod count (CAR_Pods), memory usage (SHI_MEM), and latency (CAR_LAT). These findings demonstrate that the MARL policy effectively prioritizes resource metrics that most directly impact latency, outperforming the static rule‑based approach.",
+    "top_features": [
+      {
+        "feature": "SHI_Pods",
+        "score": 0.000332,
+        "rank": 1
+      },
+      {
+        "feature": "SHI_CPU",
+        "score": 0.000316,
+        "rank": 2
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.000287,
+        "rank": 3
+      },
+      {
+        "feature": "SHI_MEM",
+        "score": 0.000268,
+        "rank": 4
+      },
+      {
+        "feature": "CAR_LAT",
+        "score": 0.000211,
+        "rank": 5
+      }
+    ]
+  },
+  "ratings": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The MAPPO‑based multi‑agent reinforcement learning policy achieved a 13 % latency improvement over the rule‑based baseline, reducing the median latency from 1 191 ms to 1 036 ms while maintaining the service level objective (SLO) violation rate at 13.2 % versus 34.9 % for the rule‑based approach. The confidence of the scale‑up action, quantified at 0.945, aligns with the high SHAP values for the top five features, indicating that pod count (CAT_Pods) and pod ratio (RAT_Pods) were the most influential predictors of the action. Secondary contributions from memory usage metrics (CAT_MEM, RAT_MEM) and CPU ratio (RAT_CPU) further corroborate the model’s focus on resource saturation signals. Overall, the evidence demonstrates that the MARL policy effectively balances performance gains with SLO compliance through data‑driven scaling decisions.",
+    "top_features": [
+      {
+        "feature": "CAT_Pods",
+        "score": 0.001722,
+        "rank": 1
+      },
+      {
+        "feature": "RAT_Pods",
+        "score": 0.000872,
+        "rank": 2
+      },
+      {
+        "feature": "CAT_MEM",
+        "score": 0.000781,
+        "rank": 3
+      },
+      {
+        "feature": "RAT_MEM",
+        "score": 0.000471,
+        "rank": 4
+      },
+      {
+        "feature": "RAT_CPU",
+        "score": 0.000235,
+        "rank": 5
+      }
+    ]
+  },
+  "user": {
+    "diagnosis": "MARL Optimized",
+    "severity": "ok",
+    "method": "openrouter/openai/gpt-oss-20b:free",
+    "explanation": "The MAPPO‑based multi‑agent reinforcement learning (MARL) autoscaler achieved a 34.4 % latency reduction, bringing the 50th percentile latency from 39 ms to 25 ms, which is reflected in the overall latency of 32.5 ms. The policy’s confidence (0.985) and the high SHAP contributions of USE_MEM, CAR_Pods, USE_CPU, USE_RPS, and CAR_RPS indicate that the model correctly identified the most influential resource metrics for scaling decisions. Compared to a rule‑based baseline, the MARL policy reduced the Service Level Objective (SLO) violation rate from 34.9 % to 13.2 %, demonstrating a substantial improvement in reliability. These results confirm that the MAPPO policy can effectively learn to balance resource utilization and performance in a Kubernetes microservices environment.",
+    "top_features": [
+      {
+        "feature": "USE_MEM",
+        "score": 0.000318,
+        "rank": 1
+      },
+      {
+        "feature": "CAR_Pods",
+        "score": 0.000224,
+        "rank": 2
+      },
+      {
+        "feature": "USE_CPU",
+        "score": 0.000212,
+        "rank": 3
+      },
+      {
+        "feature": "USE_RPS",
+        "score": 0.000164,
+        "rank": 4
+      },
+      {
+        "feature": "CAR_RPS",
+        "score": 0.000153,
+        "rank": 5
+      }
+    ]
+  }
+}

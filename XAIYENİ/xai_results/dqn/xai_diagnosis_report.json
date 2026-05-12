@@ -1,0 +1,140 @@
+{
+  "cart": {
+    "diagnosis": "marl_optimized",
+    "severity": "ok",
+    "action": "keep",
+    "confidence": 0.515,
+    "evidence": [
+      "DQN iyilestirme: 188ms -> 149ms (+21.0%)",
+      "SLO ihlal: %13.2 (Rule-based: %34.9)",
+      "Politika: keep (guven: 0.52)"
+    ],
+    "details": {
+      "latency_ms": 175.3,
+      "p50_ms": 51.82,
+      "latency_ratio": 3.38,
+      "cpu_norm": 0.127,
+      "action": "keep",
+      "in_reward": true,
+      "algo_lat_ms": 148.5,
+      "rb_lat_ms": 187.9,
+      "pct_improvement": 21.0,
+      "confidence": 0.515,
+      "pod_count": 5.0
+    }
+  },
+  "catalogue": {
+    "diagnosis": "marl_optimized",
+    "severity": "ok",
+    "action": "keep",
+    "confidence": 0.467,
+    "evidence": [
+      "DQN iyilestirme: 92ms -> 67ms (+27.3%)",
+      "SLO ihlal: %13.2 (Rule-based: %34.9)",
+      "Politika: keep (guven: 0.47)"
+    ],
+    "details": {
+      "latency_ms": 81.6,
+      "p50_ms": 28.1,
+      "latency_ratio": 2.9,
+      "cpu_norm": 0.132,
+      "action": "keep",
+      "in_reward": true,
+      "algo_lat_ms": 66.7,
+      "rb_lat_ms": 91.7,
+      "pct_improvement": 27.3,
+      "confidence": 0.467,
+      "pod_count": 4.9
+    }
+  },
+  "payment": {
+    "diagnosis": "reward_excluded",
+    "severity": "info",
+    "action": "scale_up",
+    "confidence": 0.449,
+    "evidence": [
+      "Reward disi servis (Option C)",
+      "Latency: 664ms"
+    ],
+    "details": {
+      "latency_ms": 663.9,
+      "p50_ms": 2672.94,
+      "latency_ratio": 0.25,
+      "cpu_norm": 0.131,
+      "action": "scale_up",
+      "in_reward": false,
+      "algo_lat_ms": 774.2,
+      "rb_lat_ms": 742.6,
+      "pct_improvement": -4.3,
+      "confidence": 0.449,
+      "pod_count": 4.5
+    }
+  },
+  "shipping": {
+    "diagnosis": "pod_insensitive_bottleneck",
+    "severity": "critical",
+    "action": "scale_up",
+    "confidence": 0.461,
+    "evidence": [
+      "Latency 18472ms > p50 (16949ms)",
+      "I/O-bound bottleneck"
+    ],
+    "details": {
+      "latency_ms": 18472.3,
+      "p50_ms": 16948.92,
+      "latency_ratio": 1.09,
+      "cpu_norm": 0.493,
+      "action": "scale_up",
+      "in_reward": true,
+      "algo_lat_ms": 18446.8,
+      "rb_lat_ms": 18491.2,
+      "pct_improvement": 0.2,
+      "confidence": 0.461,
+      "pod_count": 4.6
+    }
+  },
+  "ratings": {
+    "diagnosis": "under_provisioned",
+    "severity": "warning",
+    "action": "scale_down",
+    "confidence": 0.644,
+    "evidence": [
+      "Latency 1193ms > 1.2xp50 — reaktif degil"
+    ],
+    "details": {
+      "latency_ms": 1193.1,
+      "p50_ms": 661.77,
+      "latency_ratio": 1.8,
+      "cpu_norm": 0.108,
+      "action": "scale_down",
+      "in_reward": true,
+      "algo_lat_ms": 1137.9,
+      "rb_lat_ms": 1190.9,
+      "pct_improvement": 4.5,
+      "confidence": 0.644,
+      "pod_count": 4.8
+    }
+  },
+  "user": {
+    "diagnosis": "under_provisioned",
+    "severity": "warning",
+    "action": "scale_down",
+    "confidence": 0.424,
+    "evidence": [
+      "Latency 43ms > 1.2xp50 — reaktif degil"
+    ],
+    "details": {
+      "latency_ms": 42.8,
+      "p50_ms": 11.62,
+      "latency_ratio": 3.68,
+      "cpu_norm": 0.171,
+      "action": "scale_down",
+      "in_reward": true,
+      "algo_lat_ms": 38.5,
+      "rb_lat_ms": 38.7,
+      "pct_improvement": 0.5,
+      "confidence": 0.424,
+      "pod_count": 4.7
+    }
+  }
+}
